@@ -1,5 +1,6 @@
 package main;
 
+import javax.swing.*;
 import java.util.Scanner;
 
 public class Main {
@@ -9,10 +10,22 @@ public class Main {
 
         System.out.println("Please introduce population factor percentage: ");
         double population = sc.nextInt();
+        // Initialize cells in a random configuration
+        GridCell[][] grid = simpleSlime.initializePopulation(population);
+        // Create GridPanel object and add it to the interface
+        GridPanel gridPanel = new GridPanel(grid);
+        GUI gui = new GUI(grid);
 
-        // Initialize grid with random alive cells
-        simpleSlime.initializePopulation(population);
+        gui.createAndShowGUI(gridPanel);
 
+        // Create game loop at 60FPS
+        javax.swing.Timer timer = new Timer(1000/60, e -> {
+            // Move cells
+            simpleSlime.moveCells();
+            // Repaint with new instance of the grid
+            gridPanel.setGrid(simpleSlime.getGrid());
+        });
+        timer.start();
 
     }
 }

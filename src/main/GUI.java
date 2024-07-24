@@ -3,19 +3,19 @@ package main;
 import javax.swing.*;
 
 public class GUI {
-    private boolean[][] grid;
+    private GridCell[][] grid;
 
-    public GUI(boolean[][] grid) {
+    public GUI(GridCell[][] grid) {
         this.grid = grid;
     }
 
     public void createAndShowGUI (GridPanel gridPanel) {
-        JFrame frame = new JFrame("Conway's Game of Life");
+        JFrame frame = new JFrame("SimpleSlime");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         frame.add(gridPanel);
 
-        frame.setSize(200, 200);
+        frame.setSize(800, 800);
         frame.setVisible(true);
     }
 }

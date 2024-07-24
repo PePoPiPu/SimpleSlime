@@ -4,10 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GridPanel extends JPanel {
-    private boolean[][] cellGrid;
-    private final int cellSize = 1;
+    private GridCell[][] cellGrid;
+    private final int cellSize = 2;
 
-    public GridPanel(boolean[][] cellGrid) {
+    public GridPanel(GridCell[][] cellGrid) {
         this.cellGrid = cellGrid;
     }
 
@@ -17,13 +17,13 @@ public class GridPanel extends JPanel {
         drawGrid(g, cellGrid);
     }
 
-    private void drawGrid(Graphics g, boolean[][] cellGrid) {
+    private void drawGrid(Graphics g, GridCell[][] cellGrid) {
 
         for (int row = 0; row < cellGrid.length; row++) {
 
             for (int col = 0; col < cellGrid[row].length; col++) {
 
-                if (cellGrid[row][col]) {
+                if (cellGrid[row][col] instanceof Agent && ((Agent) cellGrid[row][col]).getState()) {
                     g.setColor(Color.WHITE); // Alive cell
                 } else {
                     g.setColor(Color.BLACK); // Dead cell
@@ -36,7 +36,7 @@ public class GridPanel extends JPanel {
         }
     }
 
-    public void setGrid(boolean[][] cellGrid) {
+    public void setGrid(GridCell[][] cellGrid) {
         this.cellGrid = cellGrid;
         repaint(); // Request a repaint to update the display
     }

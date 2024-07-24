@@ -26,8 +26,16 @@ public class SimpleSlime {
                 // Randomize cell initialization
                 if(rand.nextInt(0, 100) < 2 && popCont <= population) {
                     // Set current cell to be an Agent, Agent state to active and Agent direction
-                    grid[i][j] = new Agent(true, rand.nextInt(0, 7));
-                    popCont++;
+                    // Make sure Agent's F, FR and FL sensors don't get out of bounds off the grid
+                    boolean outOfBounds = false;
+                    int direction = rand.nextInt(0, 7);
+
+                    outOfBounds = checkOutOfBounds(direction, i, j);
+
+                    if(!outOfBounds) {
+                        grid[i][j] = new Agent(true, direction);
+                        popCont++;
+                    }
                 }
             }
         }
@@ -35,8 +43,17 @@ public class SimpleSlime {
         return grid;
     }
 
+    public boolean checkOutOfBounds (int direction, int i, int j) {
+        Agent agent = new Agent(true, direction);
+        boolean outOfBounds = false;
+        int sensorOffset = agent.getSensorOffsetDistance();
+        if((i + sensorOffset > grid.length - 2 || j + sensorOffset > grid[0].length - 2) || (i - sensorOffset < 1 || j - sensorOffset < 1)) {
+            outOfBounds = true;
+        }
+        return outOfBounds;
+    }
 
-    public GridCell[][] moveCells() {
+    public void moveCells() {
 
         Random rand = new Random();
 
@@ -44,6 +61,7 @@ public class SimpleSlime {
             for (int j = 0; j < grid[0].length; j++) {
                 // Decide if current Agent is motor or sensory stage
                 boolean isMotor = rand.nextBoolean();
+                boolean outOfBounds = false;
                     // Check if current GridCell is an instance of an Agent object
                     if (grid[i][j] instanceof Agent && isMotor) {
                         int direction = ((Agent) grid[i][j]).getDirection();
@@ -51,8 +69,11 @@ public class SimpleSlime {
                         switch (direction) {
                             // Top left heading
                             case 0:
+                                // Check if movement gets the cell sensors out of bounds
+                                outOfBounds = checkOutOfBounds(direction, i, j);
+
                                 // If position is free (The cell is not an intance of Agent class)
-                                if(!(grid[i - 1][j - 1] instanceof Agent)) {
+                                if(!(grid[i - 1][j - 1] instanceof Agent) && !outOfBounds) {
                                     // Set current position to ChemoAttractor instance
                                     grid[i][j] = new ChemoAttractor(9);
                                     depositChemoAttractor(grid, i, j, (ChemoAttractor) grid[i][j]);
@@ -62,78 +83,96 @@ public class SimpleSlime {
                                     // If position isn't free, set a random new direction
                                     ((Agent) grid[i][j]).setDirection(rand.nextInt(0, 7));
                                 }
+                                break;
                                 // Top heading
                             case 1:
-                                if(!(grid[i - 1][j] instanceof Agent)) {
+                                outOfBounds = checkOutOfBounds(direction, i, j);
+
+                                if(!(grid[i - 1][j] instanceof Agent) && !outOfBounds) {
                                     grid[i][j] = new ChemoAttractor(9);
                                     depositChemoAttractor(grid, i, j, (ChemoAttractor) grid[i][j]);
                                     grid[i - 1][j] = new Agent(true, direction);
                                 } else {
                                     ((Agent) grid[i][j]).setDirection(rand.nextInt(0, 7));
                                 }
+                                break;
                                 // Top right heading
                             case 2:
-                                if(!(grid[i - 1][j + 1] instanceof Agent)) {
+                                outOfBounds = checkOutOfBounds(direction, i, j);
+
+                                if(!(grid[i - 1][j + 1] instanceof Agent) && !outOfBounds) {
                                     grid[i][j] = new ChemoAttractor(9);
                                     depositChemoAttractor(grid, i, j, (ChemoAttractor) grid[i][j]);
                                     grid[i - 1][j + 1] = new Agent(true, direction);
                                 } else {
                                     ((Agent) grid[i][j]).setDirection(rand.nextInt(0, 7));
                                 }
+                                break;
                                 // Right heading
                             case 3:
-                                if(!(grid[i][j + 1] instanceof Agent)) {
+                                outOfBounds = checkOutOfBounds(direction, i, j);
+                                if(!(grid[i][j + 1] instanceof Agent) && !outOfBounds) {
                                     grid[i][j] = new ChemoAttractor(9);
                                     depositChemoAttractor(grid, i, j, (ChemoAttractor) grid[i][j]);
                                     grid[i][j + 1] = new Agent(true, direction);
                                 } else {
                                     ((Agent) grid[i][j]).setDirection(rand.nextInt(0, 7));
                                 }
+                                break;
                                 // Lower right heading
                             case 4:
-                                if(!(grid[i + 1][j + 1] instanceof Agent)) {
+                                outOfBounds = checkOutOfBounds(direction, i, j);
+                                if(!(grid[i + 1][j + 1] instanceof Agent) && !outOfBounds) {
                                     grid[i][j] = new ChemoAttractor(9);
                                     depositChemoAttractor(grid, i, j, (ChemoAttractor) grid[i][j]);
                                     grid[i + 1][j + 1] = new Agent(true, direction);
                                 } else {
                                     ((Agent) grid[i][j]).setDirection(rand.nextInt(0, 7));
                                 }
+                                break;
                                 // Bottom heading
                             case 5:
-                                if(!(grid[i + 1][j] instanceof Agent)) {
+                                outOfBounds = checkOutOfBounds(direction, i, j);
+                                if(!(grid[i + 1][j] instanceof Agent) && !outOfBounds) {
                                     grid[i][j] = new ChemoAttractor(9);
                                     depositChemoAttractor(grid, i, j, (ChemoAttractor) grid[i][j]);
                                     grid[i + 1][j] = new Agent(true, direction);
                                 } else {
                                     ((Agent) grid[i][j]).setDirection(rand.nextInt(0, 7));
                                 }
+                                break;
                                 // Lower left heading
                             case 6:
-                                if(!(grid[i + 1][j - 1] instanceof Agent)) {
+                                outOfBounds = checkOutOfBounds(direction, i, j);
+                                if(!(grid[i + 1][j - 1] instanceof Agent) && !outOfBounds) {
                                     grid[i][j] = new ChemoAttractor(9);
                                     depositChemoAttractor(grid, i, j, (ChemoAttractor) grid[i][j]);
                                     grid[i + 1][j - 1] = new Agent(true, direction);
                                 } else {
                                     ((Agent) grid[i][j]).setDirection(rand.nextInt(0, 7));
                                 }
+                                break;
                                 // Left heading
                             case 7:
-                                if(!(grid[i][j - 1] instanceof Agent)) {
+                                outOfBounds = checkOutOfBounds(direction, i, j);
+                                if(!(grid[i][j - 1] instanceof Agent) && !outOfBounds) {
                                     grid[i][j] = new ChemoAttractor(9);
                                     grid[i][j - 1] = new Agent(true, direction);
                                 } else {
                                     ((Agent) grid[i][j]).setDirection(rand.nextInt(0, 7));
                                 }
+                                break;
                         }
-                    } else { // Sensory stage
-                        checkForChemoAttractor(grid, (Agent) grid[i][j], i, j);
+                    } else {// Sensory stage
+                        if (grid[i][j] instanceof Agent && !isMotor) {
+                            checkForChemoAttractor(grid, (Agent) grid[i][j], i, j);
+                        }
                     }
             }
         }
-        return grid;
     }
 
-    public GridCell[][] depositChemoAttractor(GridCell[][] grid, int i, int j, ChemoAttractor chemoAttractor) {
+    private void depositChemoAttractor(GridCell[][] grid, int i, int j, ChemoAttractor chemoAttractor) {
 
         // Determine number of rows and columns in the GridCell
         int numRows = grid.length;
@@ -160,10 +199,9 @@ public class SimpleSlime {
                 }
             }
         }
-        return grid;
     }
 
-    public Agent checkForChemoAttractor(GridCell[][] grid, Agent agent, int i, int j) {
+    private void checkForChemoAttractor(GridCell[][] grid, Agent agent, int i, int j) {
         int offset = agent.getSensorOffsetDistance();
 
         // Check sensors for ChemoAttractor and store its values
@@ -179,7 +217,6 @@ public class SimpleSlime {
         if (agent.getFwS() > agent.getFwLS() && agent.getFwS() > agent.getFwRS()) {
             // Face same direction
             agent.setDirection(agent.getDirection());
-            return agent;
         } else if (agent.getFwS() < agent.getFwLS() && agent.getFwS() < agent.getFwRS()) {
             // Rotate randomly left or right
             Random rand = new Random();
@@ -204,7 +241,6 @@ public class SimpleSlime {
         } else {
             agent.setDirection(agent.getDirection());
         }
-        return agent;
     }
 
 }
