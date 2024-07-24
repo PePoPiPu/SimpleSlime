@@ -41,4 +41,32 @@ public class Agent extends GridCell {
     public int getMAX_DIRECTION() {
         return MAX_DIRECTION;
     }
+
+    public void setFwS(double fwS) {
+        this.fwS = fwS;
+    }
+
+    public void setFwRS(double fwRS) {
+        this.fwRS = fwRS;
+    }
+
+    public void setFwLS(double fwLS) {
+        this.fwLS = fwLS;
+    }
+
+    public double getFwS() {
+        return fwS;
+    }
+
+    public double getFwRS() {
+        return fwRS;
+    }
+
+    public double getFwLS() {
+        return fwLS;
+    }
+
+    public int getSensorOffsetDistance() {
+        return sensorOffsetDistance;
+    }
 }
