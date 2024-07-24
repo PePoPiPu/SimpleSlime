@@ -43,7 +43,7 @@ public class SimpleSlime {
         return grid;
     }
 
-    public boolean checkOutOfBounds (int direction, int i, int j) {
+    private boolean checkOutOfBounds (int direction, int i, int j) {
         Agent agent = new Agent(true, direction);
         boolean outOfBounds = false;
         int sensorOffset = agent.getSensorOffsetDistance();
@@ -61,7 +61,7 @@ public class SimpleSlime {
             for (int j = 0; j < grid[0].length; j++) {
                 // Decide if current Agent is motor or sensory stage
                 boolean isMotor = rand.nextBoolean();
-                boolean outOfBounds = false;
+                boolean outOfBounds;
                     // Check if current GridCell is an instance of an Agent object
                     if (grid[i][j] instanceof Agent && isMotor) {
                         int direction = ((Agent) grid[i][j]).getDirection();
@@ -203,16 +203,90 @@ public class SimpleSlime {
 
     private void checkForChemoAttractor(GridCell[][] grid, Agent agent, int i, int j) {
         int offset = agent.getSensorOffsetDistance();
+        int direction = agent.getDirection();
 
-        // Check sensors for ChemoAttractor and store its values
-        if (grid[i - offset][j] instanceof ChemoAttractor) {
-            agent.setFwS(((ChemoAttractor) grid[i - offset][j]).getStrength());
-        } else if (grid[i - offset][j + offset] instanceof ChemoAttractor) {
-            agent.setFwRS(((ChemoAttractor) grid[i - offset][j + offset]).getStrength());
-        } else if (grid[i - offset][j - offset] instanceof ChemoAttractor) {
-            agent.setFwLS(((ChemoAttractor) grid[i - offset][j - offset]).getStrength());
+        switch (direction) {
+            case 0:
+                // Check sensors for ChemoAttractor and store its values
+                // Sensor should be at x, y coordinates depending on direction heading
+                if (grid[i + offset][j - offset] instanceof ChemoAttractor) {
+                    agent.setFwS(((ChemoAttractor) grid[i + offset][j - offset]).getStrength());
+                } else if (grid[i + offset][j] instanceof ChemoAttractor) {
+                    agent.setFwRS(((ChemoAttractor) grid[i + offset][j]).getStrength());
+                } else if (grid[i][j - offset] instanceof ChemoAttractor) {
+                    agent.setFwLS(((ChemoAttractor) grid[i][j - offset]).getStrength());
+                }
+                break;
+            case 1:
+                if (grid[i + offset][j] instanceof ChemoAttractor) {
+                    agent.setFwS(((ChemoAttractor) grid[i + offset][j]).getStrength());
+                } else if (grid[i + offset][j + offset] instanceof ChemoAttractor) {
+                    agent.setFwRS(((ChemoAttractor) grid[i + offset][j + offset]).getStrength());
+                } else if (grid[i + offset][j - offset] instanceof ChemoAttractor) {
+                    agent.setFwLS(((ChemoAttractor) grid[i + offset][j - offset]).getStrength());
+                }
+                break;
+            case 2:
+                if (grid[i + offset][j + offset] instanceof ChemoAttractor) {
+                    agent.setFwS(((ChemoAttractor) grid[i + offset][j + offset]).getStrength());
+                } else if (grid[i][j + offset] instanceof ChemoAttractor) {
+                    agent.setFwRS(((ChemoAttractor) grid[i][j + offset]).getStrength());
+                } else if (grid[i + offset][j] instanceof ChemoAttractor) {
+                    agent.setFwLS(((ChemoAttractor) grid[i + offset][j]).getStrength());
+                }
+                break;
+            case 3:
+                if (grid[i][j + offset] instanceof ChemoAttractor) {
+                    agent.setFwS(((ChemoAttractor) grid[i][j + offset]).getStrength());
+                } else if (grid[i + offset][j + offset] instanceof ChemoAttractor) {
+                    agent.setFwRS(((ChemoAttractor) grid[i + offset][j + offset]).getStrength());
+                } else if (grid[i - offset][j + offset] instanceof ChemoAttractor) {
+                    agent.setFwLS(((ChemoAttractor) grid[i - offset][j + offset]).getStrength());
+                }
+                break;
+            case 4:
+                if (grid[i - offset][j + offset] instanceof ChemoAttractor) {
+                    agent.setFwS(((ChemoAttractor) grid[i - offset][j + offset]).getStrength());
+                } else if (grid[i - offset][j] instanceof ChemoAttractor) {
+                    agent.setFwRS(((ChemoAttractor) grid[i - offset][j]).getStrength());
+                } else if (grid[i][j + offset] instanceof ChemoAttractor) {
+                    agent.setFwLS(((ChemoAttractor) grid[i][j + offset]).getStrength());
+                }
+                break;
+            case 5:
+                if (grid[i - offset][j] instanceof ChemoAttractor) {
+                    agent.setFwS(((ChemoAttractor) grid[i - offset][j]).getStrength());
+                } else if (grid[i - offset][j - offset] instanceof ChemoAttractor) {
+                    agent.setFwRS(((ChemoAttractor) grid[i - offset][j - offset]).getStrength());
+                } else if (grid[i - offset][j + offset] instanceof ChemoAttractor) {
+                    agent.setFwLS(((ChemoAttractor) grid[i - offset][j + offset]).getStrength());
+                }
+                break;
+            case 6:
+                if (grid[i - offset][j - offset] instanceof ChemoAttractor) {
+                    agent.setFwS(((ChemoAttractor) grid[i - offset][j - offset]).getStrength());
+                } else if (grid[i][j - offset] instanceof ChemoAttractor) {
+                    agent.setFwRS(((ChemoAttractor) grid[i][j - offset]).getStrength());
+                } else if (grid[i - offset][j] instanceof ChemoAttractor) {
+                    agent.setFwLS(((ChemoAttractor) grid[i - offset][j]).getStrength());
+                }
+                break;
+            case 7:
+                if (grid[i][j - offset] instanceof ChemoAttractor) {
+                    agent.setFwS(((ChemoAttractor) grid[i][j - offset]).getStrength());
+                } else if (grid[i + offset][j - offset] instanceof ChemoAttractor) {
+                    agent.setFwRS(((ChemoAttractor) grid[i + offset][j - offset]).getStrength());
+                } else if (grid[i - offset][j - offset] instanceof ChemoAttractor) {
+                    agent.setFwLS(((ChemoAttractor) grid[i - offset][j - offset]).getStrength());
+                }
+                break;
         }
 
+
+       moveTowardsChemoAttractor(grid, agent, i, j);
+    }
+
+    private void moveTowardsChemoAttractor(GridCell[][] grid, Agent agent, int i, int j) {
         // Change direction depending on values
         if (agent.getFwS() > agent.getFwLS() && agent.getFwS() > agent.getFwRS()) {
             // Face same direction
@@ -243,4 +317,23 @@ public class SimpleSlime {
         }
     }
 
+    public void updateChemoAttractor(GridCell[][] grid) {
+
+        // Check grid for instance of chemoattractor
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j] instanceof ChemoAttractor) {
+                    double strength = ((ChemoAttractor) grid[i][j]).getStrength();
+                    double decayFactor = ((ChemoAttractor) grid[i][j]).getDecayFactor();
+                    // Lower chemoAttractor strength by decay factor.
+                    if (strength > ((ChemoAttractor) grid[i][j]).getMIN_STRENGTH() + 1){
+                        ((ChemoAttractor) grid[i][j]).setStrength(strength / decayFactor);
+                    } else {
+                        // If strength is less than the minimum strength, the chemoAttractor disappears
+                        grid[i][j] = null;
+                    }
+                }
+            }
+        }
+    }
 }

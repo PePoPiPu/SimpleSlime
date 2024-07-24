@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class GridPanel extends JPanel {
     private GridCell[][] cellGrid;
-    private final int cellSize = 2;
+    private final int cellSize = 1;
 
     public GridPanel(GridCell[][] cellGrid) {
         this.cellGrid = cellGrid;
@@ -30,7 +30,7 @@ public class GridPanel extends JPanel {
                 }
 
                 g.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
-                g.setColor(Color.GRAY); // Cell border
+
                 g.drawRect(col * cellSize, row * cellSize, cellSize, cellSize);
             }
         }

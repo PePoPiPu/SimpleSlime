@@ -27,4 +27,12 @@ public class ChemoAttractor extends GridCell {
     public double getStrength() {
         return strength;
     }
+
+    public void setStrength(double strength) {
+        this.strength = strength;
+    }
+
+    public double getDecayFactor() {
+        return decayFactor;
+    }
 }

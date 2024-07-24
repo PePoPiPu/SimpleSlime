@@ -22,6 +22,7 @@ public class Main {
         javax.swing.Timer timer = new Timer(1000/60, e -> {
             // Move cells
             simpleSlime.moveCells();
+            simpleSlime.updateChemoAttractor(simpleSlime.getGrid());
             // Repaint with new instance of the grid
             gridPanel.setGrid(simpleSlime.getGrid());
         });
